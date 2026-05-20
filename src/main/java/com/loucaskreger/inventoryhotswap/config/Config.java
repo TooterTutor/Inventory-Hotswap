@@ -62,9 +62,6 @@ public class Config {
 	private static void read() {
 		try {
 			INSTANCE = gson.fromJson(new FileReader(configFile), ConfigInstance.class);
-			if (INSTANCE == null) {
-				throw new IllegalStateException("Null configuration");
-			}
 		} catch (JsonSyntaxException e) {
 			System.err.println("JSON error, invalid syntax.");
 			e.printStackTrace();

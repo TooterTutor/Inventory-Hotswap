@@ -1,8 +1,6 @@
 package com.loucaskreger.inventoryhotswap.mixin;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_1;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_2;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_3;
+import static org.lwjgl.glfw.GLFW.*;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,40 +8,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.loucaskreger.inventoryhotswap.InventoryHotswap;
-import com.loucaskreger.inventoryhotswap.config.Config;
 
-import net.minecraft.client.Keyboard;
+import net.minecraft.client.KeyboardHandler;
+import net.minecraft.client.input.KeyEvent;
 
-@Mixin(Keyboard.class)
+@Mixin(KeyboardHandler.class)
 public class KeyboardInputMixin {
+    @Inject(method = "keyPress", cancellable = true, at = @At("HEAD"))
+    private void onKeyboardInput(long windowPointer, int action, KeyEvent keyEvent, CallbackInfo ci) {
+        if (action != GLFW_PRESS && action != GLFW_REPEAT) {
+            return;
+        }
 
-	@Inject(method = "onKey", cancellable = true, at = @At(value = "FIELD", target = "Lnet/minecraft/client/Keyboard;debugCrashStartTime:J", ordinal = 0))
-	private void onKeyboardInput(long windowPointer, int key, int scanCode, int action, int modifiers,
-			CallbackInfo ci) {
-		if (InventoryHotswap.verticalScroll.isPressed()) {
-			int inverted = Config.INSTANCE.inverted ? -1 : 1;
-			switch (key) {
-			case GLFW_KEY_1:
-				InventoryHotswap.accumulatedScrollDelta = inverted * 1;
-				InventoryHotswap.verticalScroll.setPressed(false);
-				ci.cancel();
-//				InventoryHotswap.moveToCorrectSlot = true;
-				break;
-			case GLFW_KEY_2:
-				InventoryHotswap.accumulatedScrollDelta = inverted * 2;
-				InventoryHotswap.verticalScroll.setPressed(false);
-				ci.cancel();
-//				InventoryHotswap.moveToCorrectSlot = true;
-				break;
-			case GLFW_KEY_3:
-				InventoryHotswap.accumulatedScrollDelta = inverted * 3;
-				InventoryHotswap.verticalScroll.setPressed(false);
-				ci.cancel();
-//				InventoryHotswap.moveToCorrectSlot = true;
-				break;
-			}
-
-		}
-	}
-
+        if (InventoryHotswap.handleHotbarSelectionKey(keyEvent)) {
+            ci.cancel();
+        }
+    }
 }
