@@ -178,7 +178,7 @@ public class InventoryHotswap implements ClientModInitializer {
 
     private static void registerScrollEvents() {
         ClientHotbarScrollEvents.ALLOW.register((inventory, oldSelectedSlot, newSelectedSlot, horizontal, vertical) -> {
-            if (MC.screen != null) {
+            if (MC.gui.screen() != null) {
                 return true;
             }
 
@@ -288,7 +288,7 @@ public class InventoryHotswap implements ClientModInitializer {
     }
 
     public static boolean isSwapModifierActive() {
-        return MC.screen == null && verticalScroll.isDown();
+        return MC.gui.screen() == null && verticalScroll.isDown();
     }
 
     public static boolean handleHotbarSelectionKey(KeyEvent keyEvent) {
@@ -326,7 +326,7 @@ public class InventoryHotswap implements ClientModInitializer {
                 }
             }
 
-            if (verticalScroll.consumeClick() && MC.screen == null) {
+            if (verticalScroll.consumeClick() && MC.gui.screen() == null) {
                 HudTypes config = Config.INSTANCE.type;
                 heldItemTooltips = false;
 
