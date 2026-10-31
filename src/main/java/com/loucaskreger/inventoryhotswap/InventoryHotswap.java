@@ -325,34 +325,14 @@ public class InventoryHotswap implements ClientModInitializer {
             }
 
             if (verticalScroll.consumeClick() && MC.gui.screen() == null) {
-                HudTypes config = Config.INSTANCE.type;
-                heldItemTooltips = false;
-
-                if ((Config.INSTANCE.sneakToSwapRows && player.isShiftKeyDown()) || fullBarVerticalScroll.isDown()) {
-                    renderEntireBar = true;
-                    if (config == HudTypes.OVERLAY) {
-                        config = HudTypes.INVISIBLE;
-                    }
-                }
-
-                switch (config) {
-                    case PUSHED -> {
-                        renderPushedStatusBars = true;
-                        CustomHudRenderer.renderExp = true;
-                        renderMountInfo = true;
-                    }
-                    case INVISIBLE -> {
-                        renderStatusBars = false;
-                        CustomHudRenderer.renderExp = false;
-                        renderMountInfo = false;
-                    }
-                    case OVERLAY -> {
-                    }
-                }
-
-                CustomHudRenderer.renderHotbar = false;
                 wasKeyDown = true;
-            } else if (wasKeyDown && !verticalScroll.isDown()) {
+            }
+
+            if (wasKeyDown) {
+                updateSwapMode(player);
+            }
+
+            if (wasKeyDown && !verticalScroll.isDown()) {
                 if (accumulatedScrollDelta != 0) {
                     currentIndex = player.getInventory().getSelectedSlot();
                     if (renderEntireBar) {
@@ -382,6 +362,25 @@ public class InventoryHotswap implements ClientModInitializer {
                 heldItemTooltips = true;
             }
         });
+    }
+
+    private static void updateSwapMode(LocalPlayer player) {
+        renderEntireBar = (Config.INSTANCE.sneakToSwapRows && player.isShiftKeyDown())
+                || fullBarVerticalScroll.isDown();
+
+        HudTypes hudType = Config.INSTANCE.type;
+        if (renderEntireBar && hudType == HudTypes.OVERLAY) {
+            hudType = HudTypes.INVISIBLE;
+        }
+
+        // Recompute both sides of each transition so releasing sneak restores the
+        // column HUD.
+        renderPushedStatusBars = hudType == HudTypes.PUSHED;
+        renderStatusBars = hudType != HudTypes.INVISIBLE;
+        CustomHudRenderer.renderExp = hudType != HudTypes.INVISIBLE;
+        renderMountInfo = hudType != HudTypes.INVISIBLE;
+        CustomHudRenderer.renderHotbar = false;
+        heldItemTooltips = false;
     }
 
     private static void clear() {
