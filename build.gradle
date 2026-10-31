@@ -50,6 +50,10 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+
 	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 	// if it is present.
 	// If you remove this line, sources will not be generated.
@@ -71,7 +75,7 @@ jar {
 publishing {
 	publications {
 		create("mavenJava", MavenPublication) {
-			artifactId = project.archives_base_name
+			// artifactId = project.archives_base_name
 			from components.java
 		}
 	}
