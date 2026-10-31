@@ -1,7 +1,5 @@
 package com.loucaskreger.inventoryhotswap;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.loucaskreger.inventoryhotswap.config.Config;
 import com.loucaskreger.inventoryhotswap.config.HudTypes;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -78,10 +76,10 @@ public class InventoryHotswap implements ClientModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "keys"));
 
     public static final KeyMapping verticalScroll = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-            KEY_VERTICAL_SCROLL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, CATEGORY));
+            KEY_VERTICAL_SCROLL, InputConstants.Type.KEYBOARD, InputConstants.KEY_LALT, CATEGORY));
 
     private static final KeyMapping fullBarVerticalScroll = KeyMappingHelper.registerKeyMapping(
-            new KeyMapping(KEY_FULL_BAR_SCROLL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z,
+            new KeyMapping(KEY_FULL_BAR_SCROLL, InputConstants.Type.KEYBOARD, InputConstants.KEY_Z,
                     CATEGORY));
 
     @Override
